@@ -9,13 +9,13 @@ import clsx from 'clsx';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import {Link as routerLink} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
 import styles from './UserHeader.module.scss';
 
 const Component = ({className, children }) => (
   <List component='nav' className={clsx(className, styles.root)}>
-    <ListItem button component={routerLink} to={'/'}>
+    <ListItem button component={NavLink} to={'/my-posts'} activeClassName={styles.active}>
       <ListItemText primary='My posts' primaryTypographyProps={{noWrap: true}} />
     </ListItem>
     <ListItem button component='a' href='https://google.com'>

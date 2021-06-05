@@ -23,6 +23,8 @@ const Component = ({className, post, changeHandler, submitPost}) => {
   const [imageUrl, setImageUrl] = useState('');
   const [imageName, setImageName] = useState('');
   const [isFading, setIsFading] = useState(false);
+  const [titleErrorAlerts, setTitleErrorAlerts] = useState('');
+  const [textErrorAlerts, setTextErrorAlerts] = useState('');
 
   const setImage = event => {
     changeHandler(event);
@@ -41,13 +43,33 @@ const Component = ({className, post, changeHandler, submitPost}) => {
     setImageName('');
   };
 
+  const titleVal = title => {
+    if(title && title.length < 10) setTitleErrorAlerts('Your title is too short!');
+    else setTitleErrorAlerts('');
+  };
+
+  const textVal = text => {
+    if(text && text.length < 20) setTextErrorAlerts('Your description is too short!');
+    else setTextErrorAlerts('');
+  };
+
+  const titleChangeHandler = event => {
+    titleVal(event.target.value);
+    changeHandler(event);
+  };
+
+  const textChangeHandler = event => {
+    textVal(event.target.value);
+    changeHandler(event);
+  };
+
   return (
     <Grid className={clsx(className, styles.root)} container spacing={2} justify='center'>
       <Grid item container xs={12} md={6} alignContent='stretch'>
         <Paper className={styles.paper}>
           <form noValidate autoComplete='off' className={styles.form}>
-            <TextField id='title' name='title' label='Title' variant='outlined' fullWidth margin='normal' value={post.title} onChange={changeHandler}/>
-            <TextField id='text' name='text' label='Content' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.text} onChange={changeHandler}/>
+            <TextField id='title' name='title' label='Title' variant='outlined' fullWidth margin='normal' value={post.title} onChange={titleChangeHandler} error={!!titleErrorAlerts} helperText={titleErrorAlerts}/>
+            <TextField id='text' name='text' label='Content' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.text} onChange={textChangeHandler} error={!!textErrorAlerts} helperText={textErrorAlerts}/>
             <TextField id='price' name='price' label='Price' variant='outlined' fullWidth margin='normal' myType='price' value={post.price} onChange={changeHandler} InputProps={{inputComponent: NumberFormat}} />
             <TextField id='tel' name='tel' label='Tel number' variant='outlined' fullWidth margin='normal' type='tel' value={post.tel} onChange={changeHandler}/>
             <TextField id='address' name='address' label='Address' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.address} onChange={changeHandler}/>
@@ -86,7 +108,7 @@ Component.propTypes = {
     tel: PropTypes.string,
     address: PropTypes.string,
     photo: PropTypes.string,
-  }).isRequired,
+  }),
   imageName: PropTypes.string,
   imageUrl: PropTypes.string,
   changeHandler: PropTypes.func,

@@ -2,4 +2,8 @@
 
 .root {
   display: flex;
+
+  .active {
+    color: #341f97;
+  }
 }
