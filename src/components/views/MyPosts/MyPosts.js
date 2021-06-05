@@ -28,7 +28,7 @@ const Component = ({className, children, posts, user, loadPosts, postsRequest}) 
   else {
     return (
       <Grid container spacing={2} className={clsx(className, styles.root)}>
-        {postsRequest.active && <Grid item xs={12}><LinearProgress /></Grid>};
+        {postsRequest.active && <Grid item xs={12}><LinearProgress /></Grid>}
         {postsRequest.error && <Grid item xs={12}><Alert severity='error'>Could not load posts! Sorry!</Alert></Grid>}
         <CustomButton to='/post/add' label='add'>
           <FontAwesomeIcon icon={faPlus} />

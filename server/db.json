@@ -5,39 +5,39 @@
       "title": "Chicago bound",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In felis!",
       "published": "2021-06-04T21:18:25.088Z",
-      "lastUpdate": "2021-06-05T21:37:55.686Z",
+      "lastUpdate": "2021-06-05T22:53:15.154Z",
       "email": "anna.castillo@gmail.com",
-      "tel": "",
+      "tel": "888-999-775",
       "status": "published",
       "price": "85",
       "address": "Chicago",
-      "photo": ""
+      "photo": "/images/chicago.jpeg"
     },
     {
       "id": "2",
-      "title": "Something something 2",
+      "title": "New York, New York",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In felis.",
       "published": "2021-05-05T21:18:25.088Z",
-      "lastUpdate": "2021-05-07T21:18:25.088Z",
+      "lastUpdate": "2021-06-05T22:17:17.396Z",
       "email": "stella.halstead@gmail.com",
       "tel": "123456789",
       "status": "published",
-      "price": "75",
+      "price": "85",
       "address": "NewYorkCity",
-      "photo": "https://images.pexels.com/photos/2224861/pexels-photo-2224861.png?auto=compress&cs=tinysrgb&dpr=1&w=500"
+      "photo": "/images/nyc.jpeg"
     },
     {
       "id": "3",
-      "title": "Something something 3",
+      "title": "Welcome to the game!",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In felis.",
       "published": "2021-04-15T21:18:25.088Z",
-      "lastUpdate": "2021-04-21T21:18:25.088Z",
+      "lastUpdate": "2021-06-05T22:09:27.718Z",
       "email": "isabel.halstead@gmail.com",
       "tel": "123-456-789",
       "status": "published",
       "price": "90",
       "address": "Seattle",
-      "photo": ""
+      "photo": "/images/seattle.jpeg"
     }
   ]
 }

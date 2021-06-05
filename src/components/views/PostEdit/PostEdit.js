@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { getUser } from '../../../redux/userRedux.js';
-import {getPostById, loadSingleReq, getRequest, updatePostRequest} from '../../../redux/postsRedux';
+import {getPresent, loadSingleReq, getRequest, updatePostRequest} from '../../../redux/postsRedux';
 
 import {NotFound} from '../NotFound/NotFound';
 import {AdCreator} from '../../features/AdCreator/AdCreator';
@@ -20,9 +20,9 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
     title: '',
     text: '',
     price: '',
-    tel: '',
-    address: '',
-    photo: '',
+    phone: '',
+    location: '',
+    photo: null,
   });
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
   []);
 
   useEffect(() => {
-    editChangedAd({...changedAd, ...post, photo: ''});
+    editChangedAd({...changedAd, ...post});
   },
   [post]);
 
@@ -52,12 +52,16 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
     editChangedAd({...changedAd, [event.target.name]: event.target.value});
   };
 
+  const photoChangeHandler = photo => {
+    editChangedAd({...changedAd, photo});
+  };
+
   const submitPost = () => {
     if (changedAd.title && changedAd.text && user && user.email) {
       const postData = {
         ...post,
         ...changedAd,
-        email: user.email,
+        author: user.email,
         lastUpdate: new Date(),
         status: 'published',
       };
@@ -65,14 +69,14 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
     }
   };
 
-  const editAbility = user && post && (user.type === 'admin' || user.email === post.email);
+  const editAbility = user && post && (user.type === 'admin' || user.email === post.author);
   if(postRequest.active && postRequest.type === 'LOAD_POST') return <div className={styles.root}><LinearProgress /></div>;
   else if (postRequest.error && postRequest.type === 'LOAD_POST') return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
   else if (!post || !editAbility) return <NotFound />;
   else {
     return (
       <div>
-        <AdCreator post={changedAd} changeHandler={changeHandler} submitPost={submitPost} />
+        <AdCreator post={changedAd} changeHandler={changeHandler} photoChangeHandler={photoChangeHandler} submitPost={submitPost} />
         <Snackbar open={isError} autoHideDuration={2500} onClose={() => setIsError(false)}>
           <Alert severity='error' variant='outlined'>Something went wrong! Try again!</Alert>
         </Snackbar>
@@ -93,7 +97,7 @@ Component.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   user: getUser(state),
-  post: getPostById(state, props.match.params.id),
+  post: getPresent(state, props.match.params.id),
   postRequest: getRequest(state),
 });
 

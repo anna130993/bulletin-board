@@ -14,7 +14,7 @@ const Component = ({className, children}) => (
   <div className={clsx(className, styles.root)}>
     <Alert severity='error'>
       <AlertTitle>Not found</AlertTitle>
-      The page you are looking for does not seem to exist.
+      The page you are looking for does not seem to exist. To go back to homepage, please click on our logo above.
     </Alert>
     {children}
   </div>

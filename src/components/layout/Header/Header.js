@@ -19,8 +19,16 @@ const Component = ({className, user, signin, signout}) => {
   const GenHeader = user ? UserHeader : AnonHeader;
 
   const chooseUser = ({target}) => {
-    if(target.value) {
-      signin({email: 'anna.castillo@gmail.com', type: target.value});
+    if (target.value === 'genUser') {
+      signin({
+        email: 'user.general@example.com',
+        type: 'genUser',
+      });
+    } else if (target.value === 'admin') {
+      signin({
+        email: 'admin@example.com',
+        type: 'admin',
+      });
     } else signout();
   };
 
@@ -34,7 +42,7 @@ const Component = ({className, user, signin, signout}) => {
           <GenHeader className={styles.nav} />
           <select value={user ? user.type : ''} onChange={chooseUser}>
             <option value=''>Non-user</option>
-            <option value='casualUser'>User</option>
+            <option value='genUser'>User</option>
             <option value='admin'>Admin</option>
           </select>
         </Toolbar>

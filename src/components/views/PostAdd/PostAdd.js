@@ -20,9 +20,9 @@ const Component = ({user, savePost, postRequest}) => {
     title: '',
     text: '',
     price: '',
-    tel: '',
-    address: '',
-    photo: '',
+    phone: '',
+    location: '',
+    photo: null,
   });
 
   const [isError, setIsError] = useState(false);
@@ -39,9 +39,9 @@ const Component = ({user, savePost, postRequest}) => {
         title: '',
         text: '',
         price: '',
-        tel: '',
-        address: '',
-        photo: '',
+        phone: '',
+        location: '',
+        photo: null,
       });
     }
   }, [postRequest]);
@@ -50,12 +50,16 @@ const Component = ({user, savePost, postRequest}) => {
     editNewPost({...newPost, [event.target.name]: event.target.value});
   };
 
+  const photoChangeHandler = photo => {
+    editNewPost({...newPost, photo});
+  };
+
   const submitPost = async () => {
     if(newPost.title && newPost.text && user && user.email){
       const date = new Date();
       const postData = {
         ...newPost,
-        email: user.email,
+        author: user.email,
         published: date,
         lastUpdate: date,
         status: 'published',
@@ -68,7 +72,7 @@ const Component = ({user, savePost, postRequest}) => {
   else {
     return (
       <div>
-        <AdCreator post={newPost} changeHandler={changeHandler} submitPost={submitPost} />
+        <AdCreator post={newPost} changeHandler={changeHandler} photoChangeHandler={photoChangeHandler} submitPost={submitPost} />
         <Snackbar open={isError} autoHideDuration={2500} onClose={() => setIsError(false)}>
           <Alert severity='error' variant='outlined'>Something went wrong! Try again!</Alert>
         </Snackbar>
