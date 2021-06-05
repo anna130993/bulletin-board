@@ -11,7 +11,7 @@ import NumberFormat from 'react-number-format';
 import styles from './NumberFormat.module.scss';
 
 const Component = ({className, children, inputRef, name, onChange, ...other}) => (
-  <NumberFormat {...other} className={clsx(className, styles.root)} getInputRef={inputRef} onValueChange={(values) => {onChange({target: {name: name, value: values.value}});}} thousandSeparator isNumericString prefix='$' />
+  <NumberFormat {...other} className={clsx(className, styles.root)} getInputRef={inputRef} onValueChange={(values) => {onChange({target: {name: name, value: values.value}});}} thousandSeparator isNumericString />
 );
 
 Component.propTypes = {
