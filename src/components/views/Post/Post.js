@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getPostById } from '../../../redux/postsRedux.js';
+import { getPostById, loadSingleReq, getRequest } from '../../../redux/postsRedux.js';
 import {getUser} from '../../../redux/userRedux';
 
 import Grid from '@material-ui/core/Grid';
@@ -15,11 +15,20 @@ import Link from '@material-ui/core/Link';
 import {CustomButton} from '../../common/CustomButton/CustomButton';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Alert from '@material-ui/lab/Alert';
 
 import styles from './Post.module.scss';
 
-const Component = ({className, children, post, user}) => {
-  if(!post) return <NotFound />;
+const Component = ({className, children, post, user, postRequest, loadPost}) => {
+  useEffect(() => {
+    loadPost();
+  },
+  []);
+
+  if(postRequest.active) return <div className={styles.root}><LinearProgress /></div>;
+  else if (postRequest.error) return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
+  else if (!post) return <NotFound />;
   else {
     const editAbility = user ? user.type === 'admin' || user.email === post.email : false;
 
@@ -39,6 +48,8 @@ const Component = ({className, children, post, user}) => {
     return (
       <div className={clsx(className, styles.root)}>
         <Grid container spacing={2}>
+          {postRequest.active && <Grid item xs={12}><LinearProgress /></Grid>}
+          {postRequest.error && <Grid item xs={12}><Alert severity='error'>Could not load posts! Sorry!</Alert></Grid>}
           <Grid item xs={12}>
             <Paper className={styles.paper}>
               <Grid container alignItems='center'>
@@ -47,7 +58,7 @@ const Component = ({className, children, post, user}) => {
                     {post.title}
                   </Typography>
                 </Grid>
-                {post.price && <Grid item><Typography variant='subtitle1'>{post.price}</Typography></Grid>}
+                {post.price && <Grid item><Typography variant='subtitle1'>$ {post.price}</Typography></Grid>}
               </Grid>
             </Paper>
           </Grid>
@@ -72,8 +83,8 @@ const Component = ({className, children, post, user}) => {
             </Paper>
           </Grid>
           <Grid item xs={12}>
-            Published: {post.published} <br />
-            Latest update: {post.lastUpdate}
+            Published: {new Date(post.published).toLocaleDateString()} <br />
+            Latest update: {new Date(post.lastUpdate).toLocaleDateString()}
           </Grid>
           {children}
         </Grid>
@@ -88,18 +99,21 @@ Component.propTypes = {
   className: PropTypes.string,
   post: PropTypes.object,
   user: PropTypes.object,
+  postRequest: PropTypes.object.isRequired,
+  loadPost: PropTypes.func,
 };
 
 const mapStateToProps = (state, props) => ({
   post: getPostById(state, props.match.params.id),
   user: getUser(state),
+  postRequest: getRequest(state),
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = (dispatch, props) => ({
+  loadPost: () => dispatch(loadSingleReq(props.match.params.id)),
+});
 
-const Container = connect(mapStateToProps)(Component);
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   //Component as Post,

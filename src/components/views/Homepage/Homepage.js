@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getAll } from '../../../redux/postsRedux.js';
+import { getAll, loadPostsRequest, getRequest } from '../../../redux/postsRedux.js';
 import {getUser} from '../../../redux/userRedux';
 
 import { PostsArchive } from '../../features/PostsArchive/PostsArchive';
@@ -12,10 +12,17 @@ import Grid from '@material-ui/core/Grid';
 import {CustomButton} from '../../common/CustomButton/CustomButton';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Alert from '@material-ui/lab/Alert';
 
 import styles from './Homepage.module.scss';
 
-const Component = ({className, children, posts, user}) => {
+const Component = ({className, children, posts, user, loadPosts, postsRequest}) => {
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
   const userAdds = user ? (
     <CustomButton to='/post/add' label='add'>
       <FontAwesomeIcon icon={faPlus} />
@@ -23,10 +30,13 @@ const Component = ({className, children, posts, user}) => {
   ) : null;
   return (
     <Grid container spacing={2} className={clsx(className, styles.root)}>
+      {postsRequest.active && <Grid item xs={12}><LinearProgress /></Grid>}
+      {postsRequest.error && <Grid item xs={12}><Alert severity='error'>Could not load posts! Sorry!</Alert></Grid>}
       {userAdds}
-      <Grid sm={12} item>
-        <PostsArchive posts={posts} />
-      </Grid>
+      {!postsRequest.error && !postsRequest.active &&
+      <Grid xs={12} item>
+        <PostsArchive posts={posts}/>
+      </Grid>}
       {children}
     </Grid>
   );
@@ -37,18 +47,21 @@ Component.propTypes = {
   className: PropTypes.string,
   posts: PropTypes.arrayOf(PropTypes.object),
   user: PropTypes.object,
+  loadPosts: PropTypes.func,
+  postsRequest: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
   posts: getAll(state),
   user: getUser(state),
+  postsRequest: getRequest(state),
 });
 
-//const mapDispatchToProps = dispatch => ({
-//someAction: arg => dispatch(reduxActionCreator(arg)),
-//});
+const mapDispatchToProps = dispatch => ({
+  loadPosts: () => dispatch(loadPostsRequest()),
+});
 
-const Container = connect(mapStateToProps)(Component);
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   //Component as Homepage,

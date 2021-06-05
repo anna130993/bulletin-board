@@ -16,6 +16,8 @@ import {CustomButton} from '../../common/CustomButton/CustomButton';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import styles from './AdCreator.module.scss';
 
 const Component = ({className, post, changeHandler, submitPost}) => {
@@ -25,6 +27,7 @@ const Component = ({className, post, changeHandler, submitPost}) => {
   const [isFading, setIsFading] = useState(false);
   const [titleErrorAlerts, setTitleErrorAlerts] = useState('');
   const [textErrorAlerts, setTextErrorAlerts] = useState('');
+  const [open, setOpen] = useState(false);
 
   const setImage = event => {
     changeHandler(event);
@@ -38,9 +41,11 @@ const Component = ({className, post, changeHandler, submitPost}) => {
   };
 
   const savePostHandler = () => {
-    submitPost();
-    setImageUrl('');
-    setImageName('');
+    if (post.title && post.text && !titleErrorAlerts && !textErrorAlerts) {
+      submitPost();
+      setImageUrl('');
+      setImageName('');
+    } else setOpen(true);
   };
 
   const titleVal = title => {
@@ -68,9 +73,10 @@ const Component = ({className, post, changeHandler, submitPost}) => {
       <Grid item container xs={12} md={6} alignContent='stretch'>
         <Paper className={styles.paper}>
           <form noValidate autoComplete='off' className={styles.form}>
-            <TextField id='title' name='title' label='Title' variant='outlined' fullWidth margin='normal' value={post.title} onChange={titleChangeHandler} error={!!titleErrorAlerts} helperText={titleErrorAlerts}/>
-            <TextField id='text' name='text' label='Content' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.text} onChange={textChangeHandler} error={!!textErrorAlerts} helperText={textErrorAlerts}/>
+            <TextField id='title' name='title' label='Title' variant='outlined' fullWidth margin='normal' value={post.title} onChange={titleChangeHandler} error={!!titleErrorAlerts} helperText={titleErrorAlerts} required/>
+            <TextField id='text' name='text' label='Content' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.text} onChange={textChangeHandler} error={!!textErrorAlerts} helperText={textErrorAlerts} required/>
             <TextField id='price' name='price' label='Price' variant='outlined' fullWidth margin='normal' myType='price' value={post.price} onChange={changeHandler} InputProps={{inputComponent: NumberFormat}} />
+            <TextField id='email' name='email' label='Email address' variant='outlined' fullWidth margin='normal' type='email' value={post.email} onChange={changeHandler} />
             <TextField id='tel' name='tel' label='Tel number' variant='outlined' fullWidth margin='normal' type='tel' value={post.tel} onChange={changeHandler}/>
             <TextField id='address' name='address' label='Address' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.address} onChange={changeHandler}/>
             <FormControl variant='outlined' margin='normal'>
@@ -95,6 +101,9 @@ const Component = ({className, post, changeHandler, submitPost}) => {
           <img src={imageUrl} alt='thumbnail' className={clsx(styles.photo, isFading && styles.fadeIn)} />
         </Paper>
       </Grid>}
+      <Snackbar open={open} autoHideDuration={2500} onClose={() => setOpen(false)}>
+        <Alert severity='warning' variant='outlined'>There is something missing or incorrect with your form! Check all the fields and try again!</Alert>
+      </Snackbar>
     </Grid>
   );
 };
@@ -105,6 +114,7 @@ Component.propTypes = {
     title: PropTypes.string,
     text: PropTypes.string,
     price: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    email: PropTypes.string,
     tel: PropTypes.string,
     address: PropTypes.string,
     photo: PropTypes.string,

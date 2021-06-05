@@ -1,17 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 //import clsx from 'clsx';
 
 import { connect } from 'react-redux';
 import { getUser } from '../../../redux/userRedux.js';
+import {savePostRequest, getRequest} from '../../../redux/postsRedux';
 
 import {NotFound} from '../NotFound/NotFound';
 import {AdCreator} from '../../features/AdCreator/AdCreator';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 // import styles from './PostAdd.module.scss';
 
-const Component = ({user}) => {
+const Component = ({user, savePost, postRequest}) => {
 
   const [newPost, editNewPost] = useState({
     title: '',
@@ -22,25 +25,57 @@ const Component = ({user}) => {
     photo: '',
   });
 
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (postRequest.error && postRequest.error.type === 'SAVE_POST') {
+      setIsError(true);
+    } else setIsError(false);
+
+    if(postRequest.success && postRequest.type === 'SAVE_POST') {
+      setIsSuccess(true);
+      editNewPost({
+        title: '',
+        text: '',
+        price: '',
+        tel: '',
+        address: '',
+        photo: '',
+      });
+    }
+  }, [postRequest]);
+
   const changeHandler = event => {
     editNewPost({...newPost, [event.target.name]: event.target.value});
   };
 
-  const submitPost = () => {
-    editNewPost({
-      title: '',
-      text: '',
-      price: '',
-      tel: '',
-      address: '',
-      photo: '',
-    });
+  const submitPost = async () => {
+    if(newPost.title && newPost.text && user && user.email){
+      const date = new Date();
+      const postData = {
+        ...newPost,
+        email: user.email,
+        published: date,
+        lastUpdate: date,
+        status: 'published',
+      };
+      savePost(postData);
+    }
   };
 
   if (!user) return <NotFound />;
   else {
     return (
-      <AdCreator post={newPost} changeHandler={changeHandler} submitPost={submitPost} />
+      <div>
+        <AdCreator post={newPost} changeHandler={changeHandler} submitPost={submitPost} />
+        <Snackbar open={isError} autoHideDuration={2500} onClose={() => setIsError(false)}>
+          <Alert severity='error' variant='outlined'>Something went wrong! Try again!</Alert>
+        </Snackbar>
+        <Snackbar open={isSuccess} autoHideDuration={2500} onClose={() => setIsSuccess(false)}>
+          <Alert severity='success' variant='outlined'>Post successfully saved!</Alert>
+        </Snackbar>
+      </div>
     );
   }
 };
@@ -53,13 +88,14 @@ Component.propTypes = {
 
 const mapStateToProps = state => ({
   user: getUser(state),
+  postRequest: getRequest(state),
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = dispatch => ({
+  savePost: post => dispatch(savePostRequest(post)),
+});
 
-const Container = connect(mapStateToProps)(Component);
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   //Component as PostAdd,
