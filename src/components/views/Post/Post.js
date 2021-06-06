@@ -34,7 +34,7 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
 
     const image = post.photo ?
       (<Grid item xs={12} md={6}>
-        <img src={post.photo} alt={post.title} className={clsx(styles.photo, 'MuiPaper')} />
+        <img src={post.photo} alt={post.title} className={clsx(styles.photo, 'MuiPaper-elevation1')} />
       </Grid>)
       : '';
 

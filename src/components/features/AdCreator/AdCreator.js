@@ -27,6 +27,7 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
   const [isFading, setIsFading] = useState(false);
   const [titleErrorAlerts, setTitleErrorAlerts] = useState('');
   const [textErrorAlerts, setTextErrorAlerts] = useState('');
+  const [emailErrorAlerts, setEmailErrorAlerts] = useState('');
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -64,6 +65,12 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
     else setTextErrorAlerts('');
   };
 
+  const emailVal = email => {
+    const emailPatt = new RegExp(/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.([a-z]{1,6}))$/i);
+    if (email && !emailPatt.test(email)) setEmailErrorAlerts('Your email input is incomplete/incorrect! Make sure you put in all @s and dots!');
+    else setEmailErrorAlerts('');
+  };
+
   const titleChangeHandler = event => {
     titleVal(event.target.value);
     changeHandler(event);
@@ -74,6 +81,11 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
     changeHandler(event);
   };
 
+  const emailChangeHandler = event => {
+    emailVal(event.target.value);
+    changeHandler(event);
+  };
+
   return (
     <Grid className={clsx(className, styles.root)} container spacing={2} justify='center'>
       <Grid item container xs={12} md={6} alignContent='stretch' justify='center'>
@@ -81,8 +93,8 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
           <form noValidate autoComplete='off' className={styles.form}>
             <TextField id='title' name='title' label='Title' variant='outlined' fullWidth margin='normal' value={post.title} onChange={titleChangeHandler} error={!!titleErrorAlerts} helperText={titleErrorAlerts} required/>
             <TextField id='text' name='text' label='Content' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.text} onChange={textChangeHandler} error={!!textErrorAlerts} helperText={textErrorAlerts} required/>
-            <TextField id='price' name='price' label='Price' variant='outlined' fullWidth margin='normal' myType='price' value={post.price} onChange={changeHandler} InputProps={{inputComponent: NumberFormat}} />
-            <TextField id='email' name='email' label='Email address' variant='outlined' fullWidth margin='normal' type='email' value={post.email} onChange={changeHandler} />
+            <TextField id='price' name='price' label='Price' variant='outlined' fullWidth margin='normal' value={post.price} onChange={changeHandler} InputProps={{inputComponent: NumberFormat}} />
+            <TextField id='email' name='email' label='Email address' variant='outlined' fullWidth margin='normal' type='email' value={post.email} onChange={emailChangeHandler} error={!!emailErrorAlerts} helperText={emailErrorAlerts} required/>
             <TextField id='phone' name='phone' label='Phone number' variant='outlined' fullWidth margin='normal' type='phone' value={post.phone} onChange={changeHandler}/>
             <TextField id='location' name='location' label='Address' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.location} onChange={changeHandler}/>
             <FormControl variant='outlined' margin='normal'>
