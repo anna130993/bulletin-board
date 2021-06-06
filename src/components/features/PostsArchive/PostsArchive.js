@@ -29,7 +29,7 @@ const Component = ({className, children, posts}) => {
             <Card className={styles.item}>
               <CardMedia className={styles.media} image={photo} component='div' />
               <CardContent>
-                <Typography variant='h5' component='h2' noWrap>
+                <Typography variant='h5' component='h2' noWrap className={styles.title}>
                   {title}
                 </Typography>
               </CardContent>

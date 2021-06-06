@@ -59,7 +59,7 @@ const Component = ({user, savePost, postRequest}) => {
       const date = new Date();
       const postData = {
         ...newPost,
-        author: user.email,
+        updateAuthor: user.email,
         published: date,
         lastUpdate: date,
         status: 'published',

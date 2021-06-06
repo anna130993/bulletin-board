@@ -38,10 +38,10 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
       </Grid>)
       : '';
 
-    const location = post.address ?
+    const location = post.location ?
       (<Grid item xs>
-        <Typography variant='h5' component='h2'>Where:</Typography>
-        <Typography>{post.address}</Typography>
+        <Typography variant='h5' component='h2' className={styles.title}>Where</Typography>
+        <Typography>{post.location}</Typography>
       </Grid>)
       : '';
 
@@ -54,11 +54,11 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
             <Paper className={styles.paper}>
               <Grid container alignItems='center'>
                 <Grid item xs>
-                  <Typography variant='h4' component='h1' align='center'>
+                  <Typography variant='h4' component='h1' align='center' className={styles.title}>
                     {post.title}
                   </Typography>
                 </Grid>
-                {post.price && <Grid item><Typography variant='subtitle1'>$ {post.price}</Typography></Grid>}
+                {post.price && <Grid item><Typography variant='h5' className={styles.title}>${post.price}</Typography></Grid>}
               </Grid>
             </Paper>
           </Grid>
@@ -73,7 +73,7 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
                 </Grid>
                 {location}
                 <Grid item xs>
-                  <Typography variant='h6' component='h2'>Contact</Typography>
+                  <Typography variant='h5' component='h2' className={styles.title}>Contact</Typography>
                   <Typography component='address'>
                     <Link href={`mailto:${post.email}`}>{post.email}</Link><br/>
                     {post.phone && `phone: ${post.phone}`}<br />

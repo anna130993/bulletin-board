@@ -12,6 +12,8 @@ import {UserHeader} from '../../features/UserHeader/UserHeader';
 import {AnonHeader} from '../../features/AnonHeader/AnonHeader';
 import Link from '@material-ui/core/Link';
 import {Link as RouterLink} from 'react-router-dom';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faChalkboard} from '@fortawesome/free-solid-svg-icons';
 
 import styles from './Header.module.scss';
 
@@ -30,6 +32,8 @@ const Component = ({className, user, signin, signout}) => {
         <Toolbar className={styles.toolbar}>
           <Link component={RouterLink} to='/' variant='h5' className={styles.title} color='inherit' underline='none'>
             Bulletin Board
+            <span>    </span>
+            <FontAwesomeIcon icon={faChalkboard} />
           </Link>
           <GenHeader className={styles.nav} />
           <select value={user ? user.type : ''} onChange={chooseUser}>

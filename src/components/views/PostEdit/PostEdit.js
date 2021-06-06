@@ -28,12 +28,12 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
   useEffect(() => {
     loadPost();
   },
-  [loadPost]);
+  []);
 
   useEffect(() => {
     editChangedAd({...changedAd, ...post});
   },
-  [changedAd, post]);
+  [post]);
 
   useEffect(() => {
     if (postRequest.error && postRequest.type === 'UPDATE_POST') {
@@ -61,7 +61,7 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
       const postData = {
         ...post,
         ...changedAd,
-        author: user.email,
+        updateAuthor: user.email,
         lastUpdate: new Date(),
         status: 'published',
       };
