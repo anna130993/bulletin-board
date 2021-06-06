@@ -3,8 +3,8 @@ import {API_URL} from '../config';
 
 /* selectors */
 export const getAll = ({posts}) => posts.data;
-export const getPresent = ({posts}, id) => posts.present && posts.present.id === id ? posts.present : null;
-export const getByEmail = ({posts, user}) => posts.data.filter(post => user && post.author === user.email);
+export const getPostById = ({posts}, id) => posts.data.find(post => post.id === id);
+export const getByEmail = ({posts, user}) => posts.data.filter(post => user && user.type === 'genUser' && post.email === user.email);
 export const getRequest = ({posts}) => posts.request;
 
 /* action name creator */

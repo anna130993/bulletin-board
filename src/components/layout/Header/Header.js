@@ -19,16 +19,8 @@ const Component = ({className, user, signin, signout}) => {
   const GenHeader = user ? UserHeader : AnonHeader;
 
   const chooseUser = ({target}) => {
-    if (target.value === 'genUser') {
-      signin({
-        email: 'user.general@example.com',
-        type: 'genUser',
-      });
-    } else if (target.value === 'admin') {
-      signin({
-        email: 'admin@example.com',
-        type: 'admin',
-      });
+    if(target.value) {
+      signin({email: 'anna.castillo@gmail.com', type: target.value});
     } else signout();
   };
 
@@ -64,7 +56,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  signin: arg => dispatch(signin(arg)),
+  signin: (user) => dispatch(signin(user)),
   signout: () => dispatch(signout()),
 });
 

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { getUser } from '../../../redux/userRedux.js';
-import {getPresent, loadSingleReq, getRequest, updatePostRequest} from '../../../redux/postsRedux';
+import {getPostById, loadSingleReq, getRequest, updatePostRequest} from '../../../redux/postsRedux';
 
 import {NotFound} from '../NotFound/NotFound';
 import {AdCreator} from '../../features/AdCreator/AdCreator';
@@ -28,12 +28,12 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
   useEffect(() => {
     loadPost();
   },
-  []);
+  [loadPost]);
 
   useEffect(() => {
     editChangedAd({...changedAd, ...post});
   },
-  [post]);
+  [changedAd, post]);
 
   useEffect(() => {
     if (postRequest.error && postRequest.type === 'UPDATE_POST') {
@@ -69,7 +69,7 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
     }
   };
 
-  const editAbility = user && post && (user.type === 'admin' || user.email === post.author);
+  const editAbility = user ? user.type === 'admin' || user.email === post.email : false;
   if(postRequest.active && postRequest.type === 'LOAD_POST') return <div className={styles.root}><LinearProgress /></div>;
   else if (postRequest.error && postRequest.type === 'LOAD_POST') return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
   else if (!post || !editAbility) return <NotFound />;
@@ -97,7 +97,7 @@ Component.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   user: getUser(state),
-  post: getPresent(state, props.match.params.id),
+  post: getPostById(state, props.match.params.id),
   postRequest: getRequest(state),
 });
 

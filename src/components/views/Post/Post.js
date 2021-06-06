@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getPresent, loadSingleReq, getRequest } from '../../../redux/postsRedux.js';
+import { getPostById, loadSingleReq, getRequest} from '../../../redux/postsRedux.js';
 import {getUser} from '../../../redux/userRedux';
 
 import Grid from '@material-ui/core/Grid';
@@ -30,7 +30,7 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
   else if (postRequest.error) return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
   else if (!post) return <NotFound />;
   else {
-    const editAbility = user ? user.type === 'admin' || user.email === post.author : false;
+    const editAbility = user ? user.type === 'admin' || user.email === post.email : false;
 
     const image = post.photo ?
       (<Grid item xs={12} md={6}>
@@ -75,7 +75,7 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
                 <Grid item xs>
                   <Typography variant='h6' component='h2'>Contact</Typography>
                   <Typography component='address'>
-                    <Link href={`mailto:${post.author}`}>{post.author}</Link><br/>
+                    <Link href={`mailto:${post.email}`}>{post.email}</Link><br/>
                     {post.phone && `phone: ${post.phone}`}<br />
                   </Typography>
                 </Grid>
@@ -104,7 +104,7 @@ Component.propTypes = {
 };
 
 const mapStateToProps = (state, props) => ({
-  post: getPresent(state, props.match.params.id),
+  post: getPostById(state, props.match.params.id),
   user: getUser(state),
   postRequest: getRequest(state),
 });
