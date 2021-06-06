@@ -41,7 +41,7 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
     const location = post.address ?
       (<Grid item xs>
         <Typography variant='h5' component='h2'>Where:</Typography>
-        <Typography>{post.location}</Typography>
+        <Typography>{post.address}</Typography>
       </Grid>)
       : '';
 
