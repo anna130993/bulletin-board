@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getByEmail, loadPostsRequest, getRequest } from '../../../redux/postsRedux.js';
+import { getByEmail, fetchPublished, getRequest } from '../../../redux/postsRedux.js';
 import {getUser} from '../../../redux/userRedux';
 
 import {PostsArchive} from '../../features/PostsArchive/PostsArchive';
@@ -58,7 +58,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadPosts: () => dispatch(loadPostsRequest()),
+  loadPosts: () => dispatch(fetchPublished()),
 });
 
 const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
