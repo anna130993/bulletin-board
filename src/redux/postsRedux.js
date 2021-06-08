@@ -4,8 +4,8 @@ import {API_URL} from '../config';
 /* selectors */
 export const getAll = ({posts}) => posts.data;
 export const getAllPublished = ({posts}) => posts.data.filter(post => post.status === 'published');
-export const getPostById = ({posts}, id) => posts.data.find(post => post.id === id);
-export const getByEmail = ({posts, user}) => posts.data.filter(post => user && user.type === 'genUser' && post.email === user.email);
+export const getPresent = ({posts}, id) => posts.present && posts.present.id === id ? posts.present : null;
+export const getByEmail = ({posts, user}) => posts.data.filter(post => user && post.author === user.email);
 export const getRequest = ({posts}) => posts.request;
 
 /* action name creator */
@@ -15,12 +15,14 @@ const createActionName = name => `app/${reducerName}/${name}`;
 /* action types */
 const START_REQUEST = createActionName('START_REQUEST');
 const FETCH_SUCCESS = createActionName('FETCH_SUCCESS');
+const FETCH_POST_SUCCESS = createActionName('FETCH_POST_SUCCESS');
 const REQUEST_ERROR = createActionName('REQUEST_ERROR');
 const SAVE_POST = createActionName('SAVE_POST');
 
 /* action creators */
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
+export const fetchPostSuccess = payload => ({ payload, type: FETCH_POST_SUCCESS});
 export const requestError = payload => ({ payload, type: REQUEST_ERROR });
 export const savedPost = payload => ({ payload, type: SAVE_POST });
 
@@ -42,7 +44,7 @@ export const loadSingleReq = id => {
     dispatch(startRequest('LOAD_SINGLE'));
     try {
       let res = await axios.get(`${API_URL}/api/posts/${id}`);
-      dispatch(fetchSuccess(res.data));
+      dispatch(fetchPostSuccess(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));
     }
@@ -88,8 +90,7 @@ export const reducer = (statePart = [], action = {}) => {
       };
     }
     case FETCH_SUCCESS: {
-      const postsArray = Array.isArray(action.payload) ? action.payload : [action.payload];
-      const postData = postsArray.map(({_id, ...other}) => ({id: _id, ...other}));
+      const postData = action.payload.map(({_id, ...other}) => ({id: _id, ...other}));
       return {
         ...statePart,
         request: {
@@ -99,6 +100,20 @@ export const reducer = (statePart = [], action = {}) => {
           success: true,
         },
         data: postData,
+      };
+    }
+    case FETCH_POST_SUCCESS: {
+      const {_id, ...other} = action.payload;
+      const postData = {id: _id, ...other};
+      return {
+        ...statePart,
+        request: {
+          ...statePart.request,
+          active: false,
+          error: false,
+          success: true,
+        },
+        current: postData,
       };
     }
     case REQUEST_ERROR: {

@@ -21,8 +21,10 @@ const Component = ({className, user, signin, signout}) => {
   const GenHeader = user ? UserHeader : AnonHeader;
 
   const chooseUser = ({target}) => {
-    if(target.value) {
-      signin({email: 'anna.castillo@gmail.com', type: target.value});
+    if(target.value === 'genUser') {
+      signin({email: 'general.user@example.com', type: 'genUser'});
+    } else if(target.value === 'admin') {
+      signin({email: 'admin@example.com', type: 'admin'});
     } else signout();
   };
 
