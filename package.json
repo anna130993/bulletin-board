@@ -36,7 +36,6 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "express": "^4.17.1",
-    "express-formidable": "^1.2.0",
     "mongodb": "^3.6.9",
     "mongoose": "^5.12.13",
     "node-sass": "^4.13.0",
