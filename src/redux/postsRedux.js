@@ -57,7 +57,9 @@ export const savePostRequest = postData => {
   return async dispatch => {
     dispatch(startRequest('SAVE_POST'));
     try {
-      const res = axios.post(`${API_URL}/api/posts`, postData);
+      const res = axios.post(`${API_URL}/api/posts`, postData, {
+        headers: {'Content-Type': 'multipart/form-data'},
+      });
       dispatch(savedPost(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));
@@ -69,7 +71,9 @@ export const updatePostRequest = (id, postData) => {
   return async dispatch => {
     dispatch(startRequest('UPDATE_POST'));
     try {
-      const res = axios.put(`${API_URL}/api/posts/${id}`, postData);
+      const res = axios.put(`${API_URL}/api/posts/${id}`, postData, {
+        headers: {'Content-Type': 'multipart/form-data'},
+      });
       dispatch(updatedPost(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));

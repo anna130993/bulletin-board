@@ -30,7 +30,8 @@ router.get('/posts/:id', async (req, res) => {
 });
 
 router.post('/posts', async (req, res) => {
-  const {author, title, text, photo, price, phone, location, status} = req.body;
+  const {author, title, text, price, phone, location, status} = req.body;
+  const photo = req.files.photo;
 
   const titleVal = title && title.length > 10;
   const textVal = text && text.length > 20;
@@ -40,10 +41,12 @@ router.post('/posts', async (req, res) => {
 
   const statVal = status && ['published', 'in progress', 'all done'].includes(status);
 
-  if(titleVal && textVal && emailVal && statVal) {
+  const photoVal = photo ? photo.size && photo.type.includes('image') : true;
+
+  if(titleVal && textVal && emailVal && statVal && photoVal) {
     const date = new Date();
     try {
-      const newPost = new Post({author, created: date, updated: date, status, title, text, photo, price, phone, location});
+      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('public', '') : '', price, phone, location});
       const saved = await newPost.save();
       res.status(201).json(saved);
     } catch(err) {
@@ -55,19 +58,22 @@ router.post('/posts', async (req, res) => {
 });
 
 router.put('/posts/:id', async (req, res) => {
-  const {title, text, photo, price, phone, location, status} = req.body;
+  const {title, text, price, phone, location, status} = req.body;
+  const photo = req.files.photo;
 
   const titleVal = title && title.length > 10;
   const textVal = text && text.length > 20;
 
   const statVal = status && ['published', 'in progress', 'all done'].includes(status);
 
-  if(titleVal && textVal && statVal) {
+  const photoVal = photo ? photo.size && photo.type.includes('image') : true;
+
+  if(titleVal && textVal && statVal && photoVal) {
     const date = new Date();
     try {
       const post = await Post.findById(req.params.id);
       if (post) {
-        Object.assign(post, {title, text, photo, price, phone, status, location, updated: date});
+        Object.assign(post, {title, text, photo: photo ? photo.path.replace('public', '') : '', price, phone, status, location, updated: date});
         const updatedPost = await post.save();
         res.json(updatedPost);
       }

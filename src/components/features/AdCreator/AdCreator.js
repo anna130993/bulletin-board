@@ -18,6 +18,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import {PhoneModel} from '../../common/PhoneModel/PhoneModel';
 import styles from './AdCreator.module.scss';
 
 const Component = ({className, post, changeHandler, photoChangeHandler, submitPost}) => {
@@ -32,9 +33,9 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
 
   useEffect(() => {
     if (post.photo) {
-      setImageUrl(post.photo instanceof File ? URL.createObjectURL(post.photo) : post.photo);
+      setImageUrl(URL.createObjectURL(post.photo));
       setIsFading(true);
-      setTimeout(() => { setIsFading(false); }, 1000);
+      setTimeout(() => { setIsFading(false); }, 999);
     } else {
       setImageUrl('');
       setImageName('');
@@ -95,8 +96,8 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
             <TextField id='text' name='text' label='Content' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.text} onChange={textChangeHandler} error={!!textErrorAlerts} helperText={textErrorAlerts} required/>
             <TextField id='price' name='price' label='Price' variant='outlined' fullWidth margin='normal' value={post.price} onChange={changeHandler} InputProps={{inputComponent: NumberFormat}} />
             <TextField id='email' name='email' label='Email address' variant='outlined' fullWidth margin='normal' type='email' value={post.email} onChange={emailChangeHandler} error={!!emailErrorAlerts} helperText={emailErrorAlerts} required/>
-            <TextField id='phone' name='phone' label='Phone number' variant='outlined' fullWidth margin='normal' type='phone' value={post.phone} onChange={changeHandler}/>
-            <TextField id='location' name='location' label='Address' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.location} onChange={changeHandler}/>
+            <TextField id='phone' name='phone' label='Phone number' variant='outlined' fullWidth margin='normal' value={post.phone} onChange={changeHandler} InputProps={{inputComponent: PhoneModel}} inputProps={{autoComplete: 'fresh-pass'}}/>
+            <TextField id='location' name='location' label='Address' variant='outlined' fullWidth margin='normal' multiline rows={3} value={post.location} onChange={changeHandler} inputProps={{autoComplete: 'fresh-pass'}}/>
             <FormControl variant='outlined' margin='normal'>
               <Grid container spacing={2} alignItems='center'>
                 <Grid item>

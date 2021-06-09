@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
+const formidable = require('formidable');
 
 const postsRoutes = require('./routes/posts.routes');
 
@@ -9,6 +10,7 @@ const app = express();
 
 /* MIDDLEWARE */
 app.use(cors());
+app.use(formidable({uploadDir: 'public/images', keepExtensions: true}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
