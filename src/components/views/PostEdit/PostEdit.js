@@ -57,12 +57,10 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
   };
 
   const submitPost = () => {
-    if (changedAd.title && changedAd.text && user && user.email) {
+    if (changedAd.title && changedAd.text) {
       const postData = {
         ...post,
         ...changedAd,
-        author: user.email,
-        updated: new Date(),
         status: 'published',
       };
       updatePost(postData);
