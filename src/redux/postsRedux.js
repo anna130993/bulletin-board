@@ -30,7 +30,13 @@ export const updatedPost = payload => ({payload, type: UPDATE_POST});
 
 /* thunk creators */
 export const fetchPublished = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const {posts: {latestFetch, data, request}} = getState();
+    const timePassed = Date.now() - latestFetch;
+    const newBatch = timePassed < 10 * 60 * 1000;
+    if ((data.length > 0 && newBatch) || (request.type === 'LOAD_POSTS' && request.active)) {
+      return;
+    }
     dispatch(startRequest('LOAD_POSTS'));
     try {
       let res = await axios.get(`${API_URL}/api/posts`);
@@ -99,6 +105,7 @@ export const reducer = (statePart = [], action = {}) => {
       const posts = action.payload.map(({_id, ...other}) => ({id: _id, ...other}));
       return {
         ...statePart,
+        latestFetch: Date.now(),
         request: {
           ...statePart.request,
           active: false,
