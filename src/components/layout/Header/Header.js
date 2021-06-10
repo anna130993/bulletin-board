@@ -22,9 +22,9 @@ const Component = ({className, user, signin, signout}) => {
 
   const chooseUser = ({target}) => {
     if(target.value === 'genUser') {
-      signin({email: 'general.user@example.com', type: 'genUser'});
+      signin({email: 'user123@example.com', type: 'genUser'});
     } else if(target.value === 'admin') {
-      signin({email: 'admin@example.com', type: 'admin'});
+      signin({email: 'the.admin@example.com', type: 'admin'});
     } else signout();
   };
 

@@ -1,7 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const uniqid = require('uniquid');
+const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
+
+const storage = multer.diskStorage({destination: (req, file, cb) => {
+  cb(null, 'public/images');
+}, filename: (req, file, cb) => {
+  const ext = file.originalname.split('.').slice(-1);
+  cb(null, uniqid() + '.' + ext);
+},
+});
+
+const upload = multer ({storage: storage});
 
 router.get('/posts', async (req, res) => {
   try {
@@ -29,21 +42,11 @@ router.get('/posts/:id', async (req, res) => {
   }
 });
 
-router.post('/posts', async (req, res) => {
+router.post('/posts', upload.single('photo'), async (req, res) => {
   const {author, title, text, price, phone, location, status} = req.body;
-  const photo = req.files.photo;
+  const photo = req.file;
 
-  const titleVal = title && title.length > 10;
-  const textVal = text && text.length > 20;
-
-  const emailPatt = new RegExp(/^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.([a-z]{1,6}))$/i);
-  const emailVal = emailPatt.test(author);
-
-  const statVal = status && ['published', 'in progress', 'all done'].includes(status);
-
-  const photoVal = photo ? photo.size && photo.type.includes('image') : true;
-
-  if(titleVal && textVal && emailVal && statVal && photoVal) {
+  if(titleVal(title) && textVal(text) && emailVal(author) && statVal(status) && photoVal(photo)) {
     const date = new Date();
     try {
       const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('public', '') : '', price, phone, location});
@@ -57,23 +60,16 @@ router.post('/posts', async (req, res) => {
   }
 });
 
-router.put('/posts/:id', async (req, res) => {
+router.put('/posts/:id', upload.single('photo'), async (req, res) => {
   const {title, text, price, phone, location, status} = req.body;
-  const photo = req.files.photo;
+  const photo = req.file;
 
-  const titleVal = title && title.length > 10;
-  const textVal = text && text.length > 20;
-
-  const statVal = status && ['published', 'in progress', 'all done'].includes(status);
-
-  const photoVal = photo ? photo.size && photo.type.includes('image') : true;
-
-  if(titleVal && textVal && statVal && photoVal) {
+  if(titleVal(title) && textVal(text) && statVal(status) && photoVal(photo)) {
     const date = new Date();
     try {
       const post = await Post.findById(req.params.id);
       if (post) {
-        Object.assign(post, {title, text, photo: photo ? photo.path.replace('public', '') : '', price, phone, status, location, updated: date});
+        Object.assign(post, {title, text, photo: photo ? photo.path.replace('public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
         const updatedPost = await post.save();
         res.json(updatedPost);
       }

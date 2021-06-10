@@ -132,7 +132,7 @@ Component.propTypes = {
   post: PropTypes.shape({
     title: PropTypes.string,
     text: PropTypes.string,
-    price: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    price: PropTypes.string,
     email: PropTypes.string,
     phone: PropTypes.string,
     location: PropTypes.string,
