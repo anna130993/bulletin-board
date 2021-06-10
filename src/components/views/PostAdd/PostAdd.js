@@ -76,10 +76,10 @@ const Component = ({user, savePost, postRequest}) => {
     return (
       <div>
         <AdCreator post={newPost} changeHandler={changeHandler} photoChangeHandler={photoChangeHandler} submitPost={submitPost} />
-        <Snackbar open={isError} autoHideDuration={3000} onClose={() => setIsError(false)}>
+        <Snackbar open={isError} autoHideDuration={3500} onClose={() => setIsError(false)}>
           <Alert severity='error' variant='outlined'>Something went wrong! Try again!</Alert>
         </Snackbar>
-        <Snackbar open={isSuccess} autoHideDuration={3000} onClose={() => setIsSuccess(false)}>
+        <Snackbar open={isSuccess} autoHideDuration={3500} onClose={() => setIsSuccess(false)}>
           <Alert severity='success' variant='outlined'>Post successfully saved!</Alert>
         </Snackbar>
       </div>
