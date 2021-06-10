@@ -68,8 +68,8 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
   };
 
   const editAbility = user && post && (user.type === 'admin' || user.email === post.author);
-  if(postRequest.active && postRequest.type === 'LOAD_POST') return <div className={styles.root}><LinearProgress /></div>;
-  else if (postRequest.error && postRequest.type === 'LOAD_POST') return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
+  if(postRequest.active && postRequest.type === 'LOAD_SINGLE') return <div className={styles.root}><LinearProgress /></div>;
+  else if (postRequest.error && postRequest.type === 'LOAD_SINGLE') return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
   else if (!post || !editAbility) return <NotFound />;
   else {
     return (

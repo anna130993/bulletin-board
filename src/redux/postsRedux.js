@@ -122,7 +122,7 @@ export const reducer = (statePart = [], action = {}) => {
     }
     case FETCH_POST_SUCCESS: {
       const {_id, ...other} = action.payload;
-      const postData = { id : _id, ...other};
+      const postData = {id: _id, ...other};
       return {
         ...statePart,
         request: {
@@ -131,7 +131,7 @@ export const reducer = (statePart = [], action = {}) => {
           error: false,
           success: true,
         },
-        current: postData,
+        present: postData,
       };
     }
     case REQUEST_ERROR: {
