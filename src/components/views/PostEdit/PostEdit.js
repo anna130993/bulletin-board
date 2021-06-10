@@ -57,12 +57,18 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
   };
 
   const submitPost = () => {
-    if (changedAd.title && changedAd.text) {
+    if (changedAd.title && changedAd.text && changedAd.author) {
       const postData = {
         ...post,
         ...changedAd,
         status: 'published',
       };
+      const formData = new FormData();
+      for (let [key, value] of Object.entries(postData)) {
+        if (key !== 'photo' || !!value){
+          formData.append(key, value);
+        }
+      }
       updatePost(postData);
     }
   };
@@ -75,10 +81,10 @@ const Component = ({user, post, loadPost, postRequest, updatePost}) => {
     return (
       <div>
         <AdCreator post={changedAd} changeHandler={changeHandler} photoChangeHandler={photoChangeHandler} submitPost={submitPost} />
-        <Snackbar open={isError} autoHideDuration={2500} onClose={() => setIsError(false)}>
+        <Snackbar open={isError} autoHideDuration={3000} onClose={() => setIsError(false)}>
           <Alert severity='error' variant='outlined'>Something went wrong! Try again!</Alert>
         </Snackbar>
-        <Snackbar open={isSuccess} autoHideDuration={2500} onClose={() => setIsSuccess(false)}>
+        <Snackbar open={isSuccess} autoHideDuration={3000} onClose={() => setIsSuccess(false)}>
           <Alert severity='success' variant='outlined'>Post successfully saved!</Alert>
         </Snackbar>
       </div>

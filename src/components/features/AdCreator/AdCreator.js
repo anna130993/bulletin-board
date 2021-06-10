@@ -33,7 +33,7 @@ const Component = ({className, post, changeHandler, photoChangeHandler, submitPo
 
   useEffect(() => {
     if (post.photo) {
-      setImageUrl(URL.createObjectURL(post.photo));
+      setImageUrl(post.photo instanceof File ? URL.createObjectURL(post.photo) : post.photo);
       setIsFading(true);
       setTimeout(() => { setIsFading(false); }, 999);
     } else {

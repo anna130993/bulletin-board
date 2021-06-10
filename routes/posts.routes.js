@@ -6,24 +6,17 @@ const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
 
-const storage = multer.diskStorage({destination: (req, file, cb) => {
-  cb(null, 'public/images');
-}, filename: (req, file, cb) => {
-  const ext = file.originalname.split('.').slice(-1);
-  cb(null, uniqid() + '.' + ext);
-},
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/images');
+  },
+  filename: (req, file, cb) => {
+    const ext = file.originalname.split('.').slice(-1);
+    cb(null, uniqid() + '.' + ext);
+  },
 });
 
-const upload = multer ({storage: storage,
-  fileFilter: (req, file, cb) => {
-    if(!file.mimetype.includes('image')) {
-      return cb(new Error('Please make sure you are choosing an image file'));
-    } cb(null, true);
-  },
-  limits: {
-    fileSize: 99999999,
-  },
-});
+const upload = multer({ storage: storage });
 
 router.get('/posts', async (req, res) => {
   try {
@@ -71,16 +64,14 @@ router.post('/posts', upload.single('photo'), async (req, res) => {
 
 router.put('/posts/:id', upload.single('photo'), async (req, res) => {
   const {title, text, price, phone, location, status} = req.body;
-  let photoString = req.body.photo;
   const photo = req.file;
 
   if(titleVal(title) && textVal(text) && statVal(status) && photoVal(photo)) {
-    if (!photoString) photoString = photo ? photo.path.replace('public', '') : '';
     const date = new Date();
     try {
       const post = await Post.findById(req.params.id);
       if (post) {
-        Object.assign(post, {title, text, photo: photoString, price: price === 'null' ? null : price, phone, status, location, updated: date});
+        Object.assign(post, {title, text, photo: photo ? photo.path.replace('public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
         const updatedPost = await post.save();
         res.json(updatedPost);
       }
