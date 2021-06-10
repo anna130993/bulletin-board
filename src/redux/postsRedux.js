@@ -1,9 +1,9 @@
 import axios from 'axios';
-import {API_URL} from '../config';
+import { API_URL } from '../config.js';
 
 /* selectors */
 export const getAll = ({posts}) => posts.data;
-export const getAllPublished = ({posts}) => posts.data.filter(post => post.status === 'published');
+export const getAllPublished = ({ posts }) => posts.data.filter(post => post.status === 'published');
 export const getPresent = ({posts}, id) => posts.present && posts.present.id === id ? posts.present : null;
 export const getByEmail = ({posts, user}) => posts.data.filter(post => user && post.author === user.email);
 export const getRequest = ({posts}) => posts.request;
@@ -23,18 +23,19 @@ const UPDATE_POST = createActionName('UPDATE_POST');
 /* action creators */
 export const startRequest = payload => ({ payload, type: START_REQUEST });
 export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
-export const fetchPostSuccess = payload => ({ payload, type: FETCH_POST_SUCCESS});
+export const fetchPostSuccess = payload => ({ payload, type: FETCH_POST_SUCCESS });
 export const requestError = payload => ({ payload, type: REQUEST_ERROR });
-export const savedPost = payload => ({ payload, type: SAVE_POST });
-export const updatedPost = payload => ({payload, type: UPDATE_POST});
+export const postSaved = payload => ({ payload, type: SAVE_POST });
+export const postUpdated = payload => ({ payload, type: UPDATE_POST });
 
 /* thunk creators */
 export const fetchPublished = () => {
   return async (dispatch, getState) => {
-    const {posts: {latestFetch, data, request}} = getState();
+    const {posts: {latestFetch, data, request } } = getState();
     const timePassed = Date.now() - latestFetch;
-    const newBatch = timePassed < 10 * 60 * 1000;
-    if ((data.length > 0 && newBatch) || (request.type === 'LOAD_POSTS' && request.active)) {
+    const newBatch =  timePassed < 5 * 60 * 1000;
+    if ((data.length > 0 && newBatch)
+      || (request.type === 'LOAD_POSTS' && request.active)) {
       return;
     }
     dispatch(startRequest('LOAD_POSTS'));
@@ -63,10 +64,12 @@ export const savePostRequest = postData => {
   return async dispatch => {
     dispatch(startRequest('SAVE_POST'));
     try {
-      const res = axios.post(`${API_URL}/api/posts`, postData, {
-        headers: {'Content-Type': 'multipart/form-data'},
+      const res = await axios.post(`${API_URL}/api/posts`, postData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      dispatch(savedPost(res.data));
+      dispatch(postSaved(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));
     }
@@ -77,10 +80,12 @@ export const updatePostRequest = (id, postData) => {
   return async dispatch => {
     dispatch(startRequest('UPDATE_POST'));
     try {
-      const res = axios.put(`${API_URL}/api/posts/${id}`, postData, {
-        headers: {'Content-Type': 'multipart/form-data'},
+      const res = await axios.put(`${API_URL}/api/posts/${id}`, postData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      dispatch(updatedPost(res.data));
+      dispatch(postUpdated(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));
     }
@@ -117,7 +122,7 @@ export const reducer = (statePart = [], action = {}) => {
     }
     case FETCH_POST_SUCCESS: {
       const {_id, ...other} = action.payload;
-      const postData = {id: _id, ...other};
+      const postData = { id : _id, ...other};
       return {
         ...statePart,
         request: {
@@ -141,8 +146,8 @@ export const reducer = (statePart = [], action = {}) => {
       };
     }
     case SAVE_POST: {
-      const {_id: id, author, created, title, photo, status} = action.payload;
-      const postData = {id, author, created, title, photo, status};
+      const { _id: id, author, created, title, photo, status } = action.payload;
+      const postData = {id, author, created, title, photo, status };
       return {
         ...statePart,
         request: {
@@ -155,8 +160,10 @@ export const reducer = (statePart = [], action = {}) => {
       };
     }
     case UPDATE_POST: {
-      const {_id: id, author, created, title, photo, status} = action.payload;
-      const posts = statePart.data.length > 0 ? statePart.data.map(post => post.id === id ? {id, author, created, title, photo, status} : post) : [];
+      const { _id: id, author, created, title, photo, status } = action.payload;
+      const posts = statePart.data.length > 0
+        ? statePart.data.map(post => post.id === id ? {id, author, created, title, photo, status } : post)
+        : [];
       return {
         ...statePart,
         request: {
