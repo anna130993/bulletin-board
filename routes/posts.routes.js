@@ -1,22 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const uniqid = require('uniqid');
+const upload = multer({dest:'public/images'});
 const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/images');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.originalname.split('.').slice(-1);
-    cb(null, uniqid() + '.' + ext);
-  },
-});
-
-const upload = multer({ storage: storage });
 
 router.get('/posts', async (req, res) => {
   try {
