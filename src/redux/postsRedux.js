@@ -43,7 +43,7 @@ export const fetchPublished = () => {
     }
     dispatch(startRequest('LOAD_POSTS'));
     try {
-      let res = await axios.get(`${API_URL}/api/posts`);
+      let res = await axios.get(`${API_URL}/posts`);
       dispatch(fetchSuccess(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));
@@ -55,7 +55,7 @@ export const loadSingleReq = id => {
   return async dispatch => {
     dispatch(startRequest('LOAD_SINGLE'));
     try {
-      let res = await axios.get(`${API_URL}/api/posts/${id}`);
+      let res = await axios.get(`${API_URL}/posts/${id}`);
       dispatch(fetchPostSuccess(res.data));
     } catch (e) {
       dispatch(requestError(e.message || true));
@@ -71,7 +71,7 @@ export const savePostRequest = postData => {
       for (let [key, value] of Object.entries(postData)){
         formData.append(key, value);
       }
-      const res = await axios.post(`${API_URL}/api/posts`, formData, {
+      const res = await axios.post(`${API_URL}/posts`, formData, {
         headers: { 'Content-Type': 'multipart/form-data'},
       });
       dispatch(postSaved(res.data));
@@ -89,7 +89,7 @@ export const updatePostRequest = (id, postData) => {
       for (let [key, value] of Object.entries(postData)){
         formData.append(key, value);
       }
-      const res = await axios.put(`${API_URL}/api/posts/${id}`, formData, {
+      const res = await axios.put(`${API_URL}/posts/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data'},
       });
       dispatch(postUpdated(res.data));
@@ -104,7 +104,7 @@ export const deletePostRequest = id => {
   return async dispatch => {
     dispatch(startRequest('DELETE_POST'));
     try {
-      const res = await axios.delete(`${API_URL}/api/posts/${id}`);
+      const res = await axios.delete(`${API_URL}/posts/${id}`);
       dispatch(postDeleted(res.data._id));
       history.goBack();
     } catch (e) {

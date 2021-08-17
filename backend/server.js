@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const mongoose = require('mongoose');
+const {dbURI} = require('./config');
+const connectToDB = require('./db');
 
 const postsRoutes = require('./routes/posts.routes');
 
@@ -26,13 +27,8 @@ app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
-/* MONGOOSE */
-mongoose.connect('mongodb://localhost:27017/bulletinBoard', { useNewUrlParser: true, useUnifiedTopology: true });
-const db = mongoose.connection;
-db.once('open', () => {
-  console.log('Successfully connected to the database');
-});
-db.on('error', err => console.log('Error: ' + err));
+/* CONNECT TO DB */
+connectToDB(dbURI);
 
 /* START SERVER */
 const port = process.env.PORT || 8000;
