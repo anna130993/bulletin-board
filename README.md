@@ -1,14 +1,18 @@
 # Bulletin Board
 
+https://powerful-plains-76054.herokuapp.com/
+
 Bulletin Board app created with:
+
+FRONTEND:
 - React,
 - Redux,
 - Material UI,
-- MongoDB / Mongoose,
-- Node.js.
+- Axios.
 
-## Deployed on Heroku
-https://powerful-plains-76054.herokuapp.com/
+BACKEND:
+- MongoDB,
+- Mongoose.
 
 ## Available Scripts
 
