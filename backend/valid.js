@@ -1,5 +1,5 @@
-const titleVal = title => title && title.length > 10;
-const textVal = text => text && text.length > 20;
+const titleVal = title => title && title.length >= 10;
+const textVal = text => text && text.length >= 20;
 
 const statVal = status => status && ['published', 'in progress', 'all done'].includes(status);
 

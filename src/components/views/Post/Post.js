@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getPresent, loadSingleReq, getRequest} from '../../../redux/postsRedux.js';
+import { getPresent, loadSingleReq, getRequest, deletePostRequest} from '../../../redux/postsRedux.js';
 import {getUser} from '../../../redux/userRedux';
 
 import Grid from '@material-ui/core/Grid';
@@ -12,19 +12,35 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import {NotFound} from '../NotFound/NotFound';
 import Link from '@material-ui/core/Link';
-import {CustomButton} from '../../common/CustomButton/CustomButton';
+//import {CustomButton} from '../../common/CustomButton/CustomButton';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faEdit} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+import {Link as RouterLink} from 'react-router-dom';
 
 import styles from './Post.module.scss';
 
-const Component = ({className, children, post, user, postRequest, loadPost}) => {
+const Component = ({className, children, post, user, postRequest, loadPost, deletePost}) => {
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
   useEffect(() => {
     loadPost();
   },
   []);
+
+  const handleDelete = () => {
+    deletePost();
+    setDialogOpen(true);
+  };
 
   if(postRequest.active) return <div className={styles.root}><LinearProgress /></div>;
   else if (postRequest.error) return <div className={styles.root}><Alert severity='error'>Could not load posts! Sorry!</Alert></div>;
@@ -88,7 +104,23 @@ const Component = ({className, children, post, user, postRequest, loadPost}) => 
           </Grid>
           {children}
         </Grid>
-        {editAbility && <CustomButton label='edit' to={`/post/${post.id}/edit`}><FontAwesomeIcon icon={faEdit} /></CustomButton>}
+        {editAbility && <SpeedDial ariaLabel='edit' icon={<FontAwesomeIcon icon={faEdit} />} onClose={() => setEditOpen(false)} onOpen={() => setEditOpen(true)} open={editOpen} direction='up' className={styles.fab} FabProps={{color: 'secondary'}}>
+          <SpeedDialAction component={RouterLink} to={`/post/${post.id}/edit`} icon = {<FontAwesomeIcon icon={faEdit} />} tooltipTitle='Edit' />
+          <SpeedDialAction onClick={() => setDialogOpen(true)} icon={<FontAwesomeIcon icon={faTrash} />} tooltipTitle='Delete' />
+        </SpeedDial>}
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} aria-labelledby='alert-dialog-title' aria-describedby='alert-dialog-description'>
+          <DialogContent>
+            <DialogContentText>You are about to delete this post for good! Are you certain you want to proceed?</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogOpen(false)} color='primary'>
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} color='primary' autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
@@ -101,6 +133,7 @@ Component.propTypes = {
   user: PropTypes.object,
   postRequest: PropTypes.object.isRequired,
   loadPost: PropTypes.func,
+  deletePost: PropTypes.func,
 };
 
 const mapStateToProps = (state, props) => ({
@@ -111,6 +144,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = (dispatch, props) => ({
   loadPost: () => dispatch(loadSingleReq(props.match.params.id)),
+  deletePost: () => dispatch(deletePostRequest(props.match.params.id)),
 });
 
 const Container = connect(mapStateToProps, mapDispatchToProps)(Component);

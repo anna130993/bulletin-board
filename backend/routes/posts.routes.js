@@ -39,7 +39,7 @@ router.post('/posts', upload.single('photo'), async (req, res) => {
   if(titleVal(title) && textVal(text) && emailVal(author) && statVal(status) && photoVal(photo)) {
     const date = new Date();
     try {
-      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('public', '') : '', price, phone, location});
+      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('../public', '') : '', price, phone, location});
       const saved = await newPost.save();
       res.status(201).json(saved);
     } catch(err) {
@@ -59,7 +59,7 @@ router.put('/posts/:id', upload.single('photo'), async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
       if (post) {
-        Object.assign(post, {title, text, photo: photo ? photo.path.replace('public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
+        Object.assign(post, {title, text, photo: photo ? photo.path.replace('../public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
         const updatedPost = await post.save();
         res.json(updatedPost);
       }
@@ -70,6 +70,20 @@ router.put('/posts/:id', upload.single('photo'), async (req, res) => {
     }
   } else {
     res.status(400).json({message: 'Wrong request! Sorry!'});
+  }
+});
+
+router.delete('/posts/:id', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (post) {
+      const deletedPost = await post.remove();
+      res.json(deletedPost);
+    } else {
+      res.status(404).json({ message: 'Page not found'});
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Removal error'});
   }
 });
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../config.js';
+import {history} from '../App';
 
 /* selectors */
 export const getAll = ({posts}) => posts.data;
@@ -19,6 +20,7 @@ const FETCH_POST_SUCCESS = createActionName('FETCH_POST_SUCCESS');
 const REQUEST_ERROR = createActionName('REQUEST_ERROR');
 const SAVE_POST = createActionName('SAVE_POST');
 const UPDATE_POST = createActionName('UPDATE_POST');
+const DELETE_POST = createActionName('DELETE_POST');
 
 /* action creators */
 export const startRequest = payload => ({ payload, type: START_REQUEST });
@@ -27,6 +29,7 @@ export const fetchPostSuccess = payload => ({ payload, type: FETCH_POST_SUCCESS 
 export const requestError = payload => ({ payload, type: REQUEST_ERROR });
 export const postSaved = payload => ({ payload, type: SAVE_POST });
 export const postUpdated = payload => ({ payload, type: UPDATE_POST });
+export const postDeleted = payload => ({ payload, type: DELETE_POST});
 
 /* thunk creators */
 export const fetchPublished = () => {
@@ -90,8 +93,22 @@ export const updatePostRequest = (id, postData) => {
         headers: { 'Content-Type': 'multipart/form-data'},
       });
       dispatch(postUpdated(res.data));
+      setTimeout(() => {history.push(`/post/${id}`);}, 3500);
     } catch (e) {
       dispatch(requestError(e.message || true));
+    }
+  };
+};
+
+export const deletePostRequest = id => {
+  return async dispatch => {
+    dispatch(startRequest('DELETE_POST'));
+    try {
+      const res = await axios.delete(`${API_URL}/api/posts/${id}`);
+      dispatch(postDeleted(res.data._id));
+      history.goBack();
+    } catch (e) {
+      dispatch (requestError(e.message || true));
     }
   };
 };
@@ -177,6 +194,18 @@ export const reducer = (statePart = [], action = {}) => {
           success: true,
         },
         data: posts,
+      };
+    }
+    case DELETE_POST: {
+      return {
+        ...statePart,
+        request: {
+          ...statePart.request,
+          active: false,
+          error: false,
+          success: true,
+        },
+        data: statePart.data.filter(post => post.id !== action.payload),
       };
     }
     default:

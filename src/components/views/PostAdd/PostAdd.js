@@ -11,6 +11,8 @@ import {NotFound} from '../NotFound/NotFound';
 import {AdCreator} from '../../features/AdCreator/AdCreator';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import Button from '@material-ui/core/Button';
+import {Link as RouterLink} from 'react-router-dom';
 
 // import styles from './PostAdd.module.scss';
 
@@ -80,7 +82,7 @@ const Component = ({user, savePost, postRequest}) => {
           <Alert severity='error' variant='outlined'>Something went wrong! Try again!</Alert>
         </Snackbar>
         <Snackbar open={isSuccess} autoHideDuration={3500} onClose={() => setIsSuccess(false)}>
-          <Alert severity='success' variant='outlined'>Post successfully saved!</Alert>
+          <Alert severity='success' variant='outlined' action={<Button component={RouterLink} to='/my-posts' color='inherit' size='small'>SEE ALL YOUR POSTS</Button>}>Post successfully saved!</Alert>
         </Snackbar>
       </div>
     );
