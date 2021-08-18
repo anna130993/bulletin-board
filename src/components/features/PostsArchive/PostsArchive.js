@@ -29,7 +29,7 @@ const Component = ({className, children, posts}) => {
           <Grid item key={id} xs={12} sm={6} md={4} xl={3}>
             <Card className={styles.item}>
               <CardActionArea component={RouterLink} to={`/post/${id}`}>
-                <CardMedia className={styles.media} image={photo} component='div' />
+                <CardMedia className={styles.media} src={photo} component='img' />
                 <CardContent>
                   <Typography variant='h5' component='h2' noWrap className={styles.title}>
                     {title}
