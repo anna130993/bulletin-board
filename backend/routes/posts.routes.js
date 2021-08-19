@@ -1,10 +1,12 @@
 const express = require('express');
-const router = express.Router();
+
 const multer = require('multer');
 const upload = multer({dest:'public/images'});
 const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
+
+const router = express.Router();
 
 router.get('/posts', async (req, res) => {
   try {
@@ -13,7 +15,9 @@ router.get('/posts', async (req, res) => {
       .select('author created title photo status')
       .sort({created: -1});
     if(!result) res.status(404).json({ post: 'Page not found' });
-    else res.json(result);
+    else {
+      res.header('Cache-Control', 'max-age=1200').json(result);
+    }
   }
   catch(err) {
     res.status(500).json(err);
