@@ -1,7 +1,7 @@
 const express = require('express');
 
 const multer = require('multer');
-const upload = multer({dest: '../../public/images'});
+const upload = multer({dest: 'public/images'});
 const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
@@ -42,7 +42,7 @@ router.post('/posts', upload.single('photo'), async (req, res) => {
   if(titleVal(title) && textVal(text) && emailVal(author) && statVal(status) && photoVal(photo)) {
     const date = new Date();
     try {
-      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('../../public', '') : '', price, phone, location});
+      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('public', '') : '', price, phone, location});
       const saved = await newPost.save();
       res.status(201).json(saved);
     } catch(err) {
@@ -62,7 +62,7 @@ router.put('/posts/:id', upload.single('photo'), async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
       if (post) {
-        Object.assign(post, {title, text, photo: photo ? photo.path.replace('../../public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
+        Object.assign(post, {title, text, photo: photo ? photo.path.replace('public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
         const updatedPost = await post.save();
         res.json(updatedPost);
       }
