@@ -1,34 +1,12 @@
 const express = require('express');
 
 const multer = require('multer');
-const uniqid = require('uniqid');
+const upload = multer({dest: '../../public/images'});
 const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
 
 const router = express.Router();
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, '../public/images/');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.originalname.split('.').splice(-1);
-    cb(null, uniqid() + '.' + ext);
-  },
-});
-
-const upload = multer({storage: storage,
-  fileFilter: (req, file, callback) => {
-    if (!file.mimetype.includes('image')) {
-      return callback(new Error('Only images are permitted!'));
-    }
-    callback(null, true);
-  },
-  limits: {
-    fileSize: 50000000,
-  },
-});
 
 router.get('/posts', async (req, res) => {
   try {
@@ -38,7 +16,7 @@ router.get('/posts', async (req, res) => {
       .sort({created: -1});
     if(!result) res.status(404).json({message: 'Page not found'});
     else {
-      res.json(result);
+      res.header('Cache-Control', 'max-age=7200').json(result);
     }
   } catch(err) {
     res.status(500).json(err);
@@ -64,7 +42,7 @@ router.post('/posts', upload.single('photo'), async (req, res) => {
   if(titleVal(title) && textVal(text) && emailVal(author) && statVal(status) && photoVal(photo)) {
     const date = new Date();
     try {
-      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('../public', '') : '', price, phone, location});
+      const newPost = new Post({author, created: date, updated: date, status, title, text, photo: photo ? photo.path.replace('../../public', '') : '', price, phone, location});
       const saved = await newPost.save();
       res.status(201).json(saved);
     } catch(err) {
@@ -84,7 +62,7 @@ router.put('/posts/:id', upload.single('photo'), async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
       if (post) {
-        Object.assign(post, {title, text, photo: photo ? photo.path.replace('../public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
+        Object.assign(post, {title, text, photo: photo ? photo.path.replace('../../public', '') : '', price: price === 'null' ? null : price, phone, status, location, updated: date});
         const updatedPost = await post.save();
         res.json(updatedPost);
       }
