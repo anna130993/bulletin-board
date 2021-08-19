@@ -1,4 +1,5 @@
 const Post = require('./models/post.model');
+const {imgURL} = require('./config');
 
 const loadInitData = async () => {
   const today = new Date();
@@ -8,7 +9,7 @@ const loadInitData = async () => {
       status: 'published',
       title: 'Room for rent!',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pellentesque ornare nibh eget tincidunt. Aenean ut consectetur erat, ut fringilla nibh. ',
-      photo: '/images/room.jpeg',
+      photo: `${imgURL}/images/room.jpeg`,
       price: 500,
       phone: '12345678901',
       location: 'New York City, NY',
@@ -19,7 +20,7 @@ const loadInitData = async () => {
       status: 'published',
       title: 'Explore bonnie Scotland!',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pellentesque ornare nibh eget tincidunt. Aenean ut consectetur erat, ut fringilla nibh. ',
-      photo: '/images/scotland.jpeg',
+      photo: `${imgURL}/images/scotland.jpeg`,
       price: 4545,
       phone: '12345678901',
       location: '',
@@ -30,7 +31,7 @@ const loadInitData = async () => {
       status: 'published',
       title: 'House for sale!',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pellentesque ornare nibh eget tincidunt. Aenean ut consectetur erat, ut fringilla nibh. ',
-      photo: '/images/house.jpeg',
+      photo: `${imgURL}/images/house.jpeg`,
       price: 55500,
       phone: '12345678901',
       location: 'Seattle, WA',
@@ -41,7 +42,7 @@ const loadInitData = async () => {
       status: 'published',
       title: 'Car for sale',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pellentesque ornare nibh eget tincidunt. Aenean ut consectetur erat, ut fringilla nibh. ',
-      photo: '/images/car.jpeg',
+      photo: `${imgURL}/images/car.jpeg`,
       price: 7000,
       phone: '12345678901',
       location: 'Chicago, IL',
@@ -52,7 +53,7 @@ const loadInitData = async () => {
       status: 'published',
       title: 'Work at Cloud9!',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pellentesque ornare nibh eget tincidunt. Aenean ut consectetur erat, ut fringilla nibh. ',
-      photo: '/images/superstore.jpeg',
+      photo: `${imgURL}/images/superstore.jpeg`,
       price: 800,
       phone: '12345678901',
       location: 'Saint Louis, MO',

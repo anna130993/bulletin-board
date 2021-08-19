@@ -7,7 +7,7 @@ const connectToDB = (dbUri) => {
   const db = mongoose.connection;
 
   db.once('open', () => {
-    console.log('Successfully connected to the database ', dbUri);
+    console.log('Successfully connected to the database ');
     loadInitData();
   });
 
