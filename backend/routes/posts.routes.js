@@ -1,12 +1,34 @@
 const express = require('express');
 
 const multer = require('multer');
-const upload = multer({dest:'../public/images/'});
+const uniqid = require('uniqid');
 const {titleVal, textVal, statVal, photoVal, emailVal} = require('../valid');
 
 const Post = require('../models/post.model');
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, '../public/images/');
+  },
+  filename: (req, file, cb) => {
+    const ext = file.originalname.split('.').slice(-1);
+    cb(null, uniqid() + '.' + ext);
+  },
+});
+
+const upload = multer({storage: storage,
+  fileFilter: (req, file, callback) => {
+    if (!file.mimetype.includes('image')) {
+      return callback(new Error('Only images are allowed'));
+    }
+    callback(null, true);
+  },
+  limits: {
+    fileSize: 5000000,
+  },
+});
 
 router.get('/posts', async (req, res) => {
   try {
@@ -14,12 +36,11 @@ router.get('/posts', async (req, res) => {
       .find({status: 'published'})
       .select('author created title photo status')
       .sort({created: -1});
-    if(!result) res.status(404).json({ post: 'Page not found' });
+    if(!result) res.status(404).json({message: 'Page not found'});
     else {
-      res.header('Cache-Control', 'max-age=7200').json(result);
+      res.json(result);
     }
-  }
-  catch(err) {
+  } catch(err) {
     res.status(500).json(err);
   }
 });
