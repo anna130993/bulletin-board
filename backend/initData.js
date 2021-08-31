@@ -1,7 +1,6 @@
 const Post = require('./models/post.model');
 
 const loadInitData = async () => {
-  const today = new Date();
   const data = [
     {
       author: 'user123@example.com',
@@ -12,8 +11,8 @@ const loadInitData = async () => {
       price: 500,
       phone: '12345678901',
       location: 'New York City, NY',
-      created: today,
-      updated: today,
+      created: '2021-08-25T08:53:14.221Z',
+      updated: '2021-08-25T08:53:14.221Z',
     },{
       author: 'user123@example.com',
       status: 'published',
@@ -23,8 +22,8 @@ const loadInitData = async () => {
       price: 4545,
       phone: '12345678901',
       location: '',
-      created: today,
-      updated: today,
+      created: '2021-06-20T08:53:14.221Z',
+      updated: '2021-06-24T08:53:14.221Z',
     },{
       author: 'user123@example.com',
       status: 'published',
@@ -34,19 +33,19 @@ const loadInitData = async () => {
       price: 55500,
       phone: '12345678901',
       location: 'Seattle, WA',
-      created: today,
-      updated: today,
+      created: '2021-07-28T08:53:14.221Z',
+      updated: '2021-07-28T08:53:14.221Z',
     },{
       author: 'user123@example.com',
       status: 'published',
       title: 'Car for sale',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pellentesque ornare nibh eget tincidunt. Aenean ut consectetur erat, ut fringilla nibh. ',
-      photo: '/images/car.jpeg',
+      photo: '/images/car.jpg',
       price: 7000,
       phone: '12345678901',
       location: 'Chicago, IL',
-      created: today,
-      updated: today,
+      created: '2021-07-25T08:53:14.221Z',
+      updated: '2021-07-29T08:53:14.221Z',
     },{
       author: 'user123@example.com',
       status: 'published',
@@ -56,8 +55,8 @@ const loadInitData = async () => {
       price: 800,
       phone: '12345678901',
       location: 'Saint Louis, MO',
-      created: today,
-      updated: today,
+      created: '2021-07-28T08:53:14.221Z',
+      updated: '2021-07-30T08:53:14.221Z',
     },
   ];
 
